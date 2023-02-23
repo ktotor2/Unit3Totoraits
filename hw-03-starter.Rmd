@@ -1,7 +1,7 @@
 ---
 title: "HW 03 - Great Lakes Fish Datasets"
-author: "Insert your name here"
-date: "Insert date here"
+author: "Kristina Totoraitis"
+date: "02.23.23"
 output: html_document
 ---
 
@@ -21,7 +21,15 @@ fish_stock <- read_csv("data/great-lakes-fish-stock.csv")
 
 ### Exercise 1
 
-Remove this text, and add your answer for Exercise 1 here.
+```{r catch-data-subset}
+catch_data %>%
+  select(year, lake, species, region, values)
+```
+```{r fish-stock-subset}
+fish_stock %>%
+  select(YEAR, MONTH, LAKE, STATE_PROV, SPECIES, WEIGHT)
+
+```
 
 ### Exercise 2
 
