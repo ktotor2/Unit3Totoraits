@@ -1,7 +1,7 @@
 ---
 title: "Lab 03 - Great Lakes Fish Stocking"
-author: "Insert your name here"
-date: "Insert date here"
+author: "Kristina Totoraitis"
+date: "02-16-23"
 output: html_document
 ---
 
@@ -19,39 +19,87 @@ fish_stock <- read_csv("data/great-lakes-fish-stock.csv")
 
 ### Exercise 1
 
-Remove this text, and add your answer for Exercise 1 here.
+8 columns & 56,232 rows 
 
 ### Exercise 2
 
-Remove this text, and add your answer for Exercise 2 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+```{r}
+salmon_stock <- fish_stock %>%
+  filter(
+    SPECIES %in% c("ATS", "CHS", "COS"),
+    !is.na(WEIGHT),
+      LAKE != "ON"
+  )
+```
+```{r}
+salmon_stock %>%
+  glimpse()
+```
+
+There are 56,232 rows & 8 columns, there are 5 numerical variables & 3 character strings. 
 
 ### Exercise 3
 
-Remove this text, and add your answer for Exercise 3 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+```{r}
+salmon_stock %>%
+  mutate(
+    SALMON_WEIGHT_G = WEIGHT / NO_STOCKED * 1000
+  )
+```
 
+The mutate function is creating the average weight variable. 
 ### Exercise 4
 
-Remove this text, and add your answer for Exercise 4 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+```{r}
+salmon_stock %>% 
+  group_by(LAKE) %>% 
+  filter(YEAR > 2000) %>% 
+  summarize(MEAN_NO_STOCKED = mean(NO_STOCKED, na.rm = TRUE),
+            MEAN_WEIGHT = mean(WEIGHT, na.rm = TRUE)) %>% 
+  arrange(desc(MEAN_WEIGHT))
+```
+
 
 ### Exercise 5
+```{r}
+Trout_stock <- fish_stock %>%
+  filter(
+    SPECIES %in% c("BKT", "BRN", "LAT", "TRT"),
+    !is.na(WEIGHT),
+      LAKE != "ON"
+  )
+```
+```{r}
+Trout_stock %>%
+  glimpse()
+```
 
-Remove this text, and add your answer for Exercise 5 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+ˆ
+
+
+```{r}
+Trout_stock %>%
+  mutate(
+    Trout_WEIGHT_G = WEIGHT / NO_STOCKED * 1000
+  )
+```
+```{r}
+Trout_stock %>% 
+  group_by(LAKE) %>% 
+  filter(YEAR > 2000) %>%
+  summarize(MEAN_NO_STOCKED = mean(NO_STOCKED, na.rm = TRUE),
+            MEAN_WEIGHT = mean(WEIGHT, na.rm = TRUE)) %>% 
+  arrange(desc(MEAN_WEIGHT))
+```
+
+
 
 ### Exercise 6
+```{r}
+fish_stock%>%
+  filter( SPECIES== "CHS"|SPECIES== "BKT")%>% 
+group_by(YEAR, LAKE, SPECIES)%>% summarise(SUM_ANNUAL= sum(NO_STOCKED, na.rm=TRUE)) %>% 
+ggplot(aes( x= YEAR, y= SUM_ANNUAL, color= SPECIES))+ geom_line()+ 
+  facet_wrap(~ LAKE)+ theme_bw()
+```
 
-Remove this text, and add your answer for Exercise 6 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
