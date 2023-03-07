@@ -22,41 +22,63 @@ fish_stock <- read_csv("data/great-lakes-fish-stock.csv")
 ### Exercise 1
 
 ```{r catch-data-subset}
-catch_data %>%
+catch_data <- catch_data %>%
   select(year, lake, species, region, values)
 ```
 ```{r fish-stock-subset}
-fish_stock %>%
+fish_stock <- fish_stock %>%
   select(YEAR, MONTH, LAKE, STATE_PROV, SPECIES, WEIGHT)
 
 ```
 
 ### Exercise 2
 
-Remove this text, and add your answer for Exercise 2 here.
+```{r}
+glimpse(catch_data)
+glimpse(fish_stock)
+
+```
 
 ### Exercise 3
+```{r filter-catch, eval = TRUE}
+catch_data <- catch_data %>% 
+  filter(region == "U.S. Total",
+         species == "Chinook Salmon",
+         lake == "Michigan")
+```
+```{r filter-stock, eval = TRUE}
+fish_stock <- fish_stock %>% 
+  filter(LAKE %in% c("MI", "WI", "IL", "IN"),
+         SPECIES == "CHS",
+         LAKE == "MI")
+```
 
-Remove this text, and add your answer for Exercise 3 here.
 
 ### Exercise 4
+There are `r nrow(catch_data)` columns in the catch data set.
+The min year is `r min(catch_data$year)` for the catch data set.
+The max year is `r max(catch_data$year)` for the catch data set.
+There are `r nrow(fish_stock)` columns in the fish stock data set.
+There min year is `r min(fish_stock$YEAR)` for the fish stock data set. 
+The max year is `r max(fish_stock$YEAR)` for the fish stock data set. 
 
-Remove this text, and add your answer for Exercise 4 here.
 
 ### Exercise 5
+```{r eval=TRUE}
+fish_stock_yearly<- fish_stock%>%
+  group_by(YEAR)%>%
+summarize( STOCK_WEIGHT_YR= sum(WEIGHT, na.rm=TRUE))
 
-Remove this text, and add your answer for Exercise 5 here.
+```
 
-### Code chunks provided
-
-Remember to change eval = FALSE, to eval = TRUE, when you are ready to run the code/knit the document.
-
-```{r finalize-fish-stock, eval = FALSE}
+```{r finalize-fish-stock, eval = TRUE}
 fish_stock_yearly <- fish_stock_yearly %>% 
   rename(year = YEAR) %>% 
   mutate(stock_weight_yr_lbs = as.integer(STOCK_WEIGHT_YR * 0.454 / 1000)) %>% # 1 lb = 1 kg * 0.454
   select(year, stock_weight_yr_lbs)
 ```
+
+
 
 ```{r finalize-catch-data, eval = FALSE}
 catch_data <- catch_data %>% 
@@ -65,12 +87,58 @@ catch_data <- catch_data %>%
 
 ### Exercise 6
 
-Remove this text, and add your answer for Exercise 6 here.
+```{r left-join}
+catch_data%>%
+  left_join( fish_stock_yearly)
+```
+
+Add narrative here.
+
+```{r right-join}
+right_join ( catch_data, fish_stock_yearly)
+```
+
+Add narrative here.
+
+```{r inner-join}
+inner_join(catch_data, fish_stock_yearly)
+```
+
+Add narrative here.
+
+```{r full-join}
+full_join(catch_data, fish_stock_yearly)
+```
+```{r anti-join-v1, eval = TRUE}
+catch_data %>% 
+  anti_join(fish_stock_yearly)
+```
+
+```{r anti-join-v2, eval = FALSE}
+fish_stock_yearly %>% 
+  anti_join(catch_data)
+```
+
+
 
 ### Exercise 7
+```{r pivot-longer, eval = FALSE}
+catch_data %>% 
+  left_join(fish_stock_yearly) %>% 
+  pivot_longer(names_to = "activity",
+               values_to = "weight_lbs",
+               cols = 5:6)
+```
 
-Remove this text, and add your answer for Exercise 7 here.
 
 ### Exercise 8
 
-Remove this text, and add your answer for Exercise 8 here.
+
+```{r final-visualization, eval = FALSE}
+catch_data %>% 
+  left_join(fish_stock_yearly) %>% 
+  pivot_longer(names_to = "activity",
+               values_to = "weight_lbs",
+               cols = 5:6)%>%
+  ggplot(aes( x=year, y= weight_lbs, color= activity))+ geom_line()+ theme_bw()
+```
